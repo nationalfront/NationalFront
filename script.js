@@ -116,13 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             isFlipped = true;
             isAnimating = false; 
-            console.log("Flip complete. Pausing before opening...");
-            
-            // Add a delay before starting the open animation
-            setTimeout(() => {
-                openLetter(); 
-            }, 500); // Pause for 500ms (0.5 seconds) after flip before opening
-
+            console.log("Flip complete. Ready for next click to open.");
         }, flipDuration);
     }
 
@@ -170,12 +164,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isAnimating) return; // Ignore clicks during animation
 
         if (!isFlipped) {
-            flipLetter(); // Start the flip -> open sequence
+            // State 1: Not flipped -> Flip the letter
+            flipLetter(); 
+        } else if (isFlipped && !isOpened) {
+            // State 2: Flipped but not opened -> Open the letter
+            openLetter();
         } else if (isOpened) {
-            // If it's already flipped and opened, reset on click
+            // State 3: Opened -> Reset the animation
             resetAnimation();
         }
-        // If it's flipped but not opened, the open call is already queued by flipLetter
     });
 
 });
