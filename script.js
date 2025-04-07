@@ -53,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         /* 45 */ "سرکار خانم معصومه‌ دهقان",
         /* 46 */ "سرکار خانم فیروزه صابر",
         /* 47 */ "سرکار خانم طاهره طالقانی",
-        /* 48 */ "سرکار خانم نسرین ستوده" // Note: Check for non-breaking spaces if copy-pasted
+        /* 48 */ "سرکار خانم نسرین ستوده", // Note: Check for non-breaking spaces if copy-pasted
+        /* 49 */ "سرکار خانم پوران دخت برومند"
     ];
 
     let isFlipped = false;
