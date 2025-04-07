@@ -113,12 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
         foldedLetter.classList.add("flipped");
         console.log("Flipping...");
 
-        // Wait for flip animation to finish, then open
         setTimeout(() => {
             isFlipped = true;
-            isAnimating = false; // Allow open to proceed
-            console.log("Flip complete. Opening...");
-            openLetter(); 
+            isAnimating = false; 
+            console.log("Flip complete. Pausing before opening...");
+            
+            // Add a delay before starting the open animation
+            setTimeout(() => {
+                openLetter(); 
+            }, 500); // Pause for 500ms (0.5 seconds) after flip before opening
+
         }, flipDuration);
     }
 
