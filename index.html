@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Folded Letter Animation</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="letter-container">
+            <div class="folded-letter" id="foldedLetter">
+                <!-- Back side of the folded letter (Middle Square) -->
+                <div class="letter-part letter-back">
+                    <!-- Text will be inserted here by JS -->
+                    <span class="back-text"></span>
+                </div>
+
+                <!-- Front side of the folded letter (Flaps + Seal) -->
+                <div class="letter-part letter-front-folded">
+                    <div class="flap top-flap">
+                        <span class="flap-text">هیات رئیسه شورای مرکزی جبهه ملی ایران</span>
+                    </div>
+                    <div class="flap bottom-flap"></div>
+                    <div class="wax-seal" id="waxSeal">
+                        <img src="assets/front-WaxSeal.webp" alt="Wax Seal" /> 
+                        <!-- Assuming a single seal image for now -->
+                    </div>
+                </div>
+
+                <!-- Unfolded Letter Content (Full front image) -->
+                <div class="letter-part letter-front-unfolded">
+                    </div> 
+            </div>
+        </div>
+
+        <!-- Remove the controls section -->
+        <!-- 
+        <div class="controls">
+            <button id="flipBtn">Flip Letter</button>
+            <button id="openBtn">Open Letter</button>
+            <button id="resetBtn">Reset</button>
+        </div> 
+        -->
+
+        <script src="script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,281 @@
+:root {
+    --letter-width: 600px;
+    --letter-height-unfolded: 852px;
+    --letter-height-folded: 600px; /* Middle square height */
+    --flap-height: 126px; /* (852 - 600) / 2 */
+    --gap-height: 2px; /* Gap between flaps */
+    --wax-seal-size: 86px; /* Increased from 72px (72 * 1.2) */
+
+    --flip-duration: 0.8s;
+    --unfold-duration: 0.7s; /* Slightly adjusted */
+    --unfold-ease: cubic-bezier(0.645, 0.045, 0.355, 1); /* Ease-in-out cubic */
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Set the desired background */
+    background-image: url('assets/Background.webp');
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-attachment: fixed; /* Keep background fixed during scroll */
+
+    perspective: 1500px; /* Deeper perspective for 3D */
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.letter-container {
+    position: relative;
+    width: var(--letter-width);
+    height: var(--letter-height-folded); /* Starts folded */
+    cursor: pointer;
+    margin: 50px auto;
+    /* No initial transform needed for centering */
+    /* perspective: 1500px; -- Moved to body */
+}
+
+.folded-letter {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform var(--flip-duration) ease-in-out;
+    /* Start showing the back */
+    transform: rotateY(0deg);
+}
+
+.letter-part {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Hide the side facing away */
+    background-size: var(--letter-width) var(--letter-height-unfolded); /* Full image size */
+    background-repeat: no-repeat;
+}
+
+/* Back side (Visible Initially) */
+.letter-back {
+    background-image: url('assets/letter-back.webp');
+    /* Show the middle 600x600 section */
+    background-position: 0 calc(-1 * var(--flap-height)); 
+    transform: rotateY(0deg); /* Facing forward initially */
+    background-color: #eee; /* Fallback color */
+    /* Style container for text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden; /* Ensure text doesn't overflow */
+}
+
+/* Style for the text inside the letter back */
+.back-text {
+    font-family: 'IranNastaliq2', sans-serif; /* Apply custom font */
+    font-size: 1.8rem; /* Adjust size as needed */
+    color: #333; /* Adjust color as needed */
+    direction: rtl; /* Right-to-left text */
+    padding: 10px; /* Add some padding around the text */
+    line-height: 1.2; /* Adjust line height for Nastaliq */
+    position: relative; /* To ensure it sits correctly */
+    z-index: 1; /* Sit above background */
+}
+
+/* Front side (Folded - Initially Hidden) */
+.letter-front-folded {
+    /* When flipped, this side should show the back's middle section */
+    background-image: url('assets/letter-back.webp'); 
+    /* Show middle part of the BACK image */
+    background-position: 0 calc(-1 * var(--flap-height)); 
+    transform: rotateY(180deg); /* Facing away initially */
+    background-color: #ddd; /* Fallback color */
+    overflow: hidden; 
+    /* Add pseudo-element for the white line */
+    position: relative; /* Needed for absolute positioning of pseudo-element */
+}
+
+/* White line in the middle gap */
+.letter-front-folded::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: var(--gap-height);
+    background-color: white; /* The dividing line color */
+    transform: translateY(-50%);
+    z-index: 1; /* Behind flaps and seal */
+}
+
+/* --- Flap Styling (within letter-front-folded) --- */
+.flap {
+    position: absolute; 
+    left: 0;
+    width: 100%;
+    height: var(--flap-height);
+    /* Flaps show the BACK of the paper when folded */
+    background-image: url('assets/letter-back.webp'); 
+    background-size: var(--letter-width) var(--letter-height-unfolded);
+    background-repeat: no-repeat;
+    transform-origin: center; 
+    /* Use the new timing function */
+    transition: transform var(--unfold-duration) var(--unfold-ease), opacity var(--unfold-duration) var(--unfold-ease);
+    z-index: 2; 
+    backface-visibility: hidden; /* Hide back during unfold animation */
+}
+
+.top-flap {
+    top: calc(-1 * var(--gap-height) / 2); /* Pull up slightly for gap */
+    /* Show the TOP section of the BACK image */
+    background-position: 0 0; 
+    transform-origin: top center; 
+    /* Add subtle shadow to simulate bottom edge */
+    box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+    /* Slight rotation for natural look */
+    transform: rotateX(2deg);
+    /* Style container for text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden; /* Ensure text doesn't overflow */
+}
+
+.flap-text {
+    font-family: 'IranNastaliq2', sans-serif; /* Apply custom font */
+    font-size: 1.44rem; /* Reduced size (1.8 * 0.8) */
+    color: #333; /* Adjust color as needed */
+    direction: rtl; /* Right-to-left text */
+    padding: 10px; /* Add some padding around the text */
+    line-height: 1.2; /* Adjust line height for Nastaliq */
+    position: relative; /* To ensure it sits correctly */
+    z-index: 1; /* Sit above flap background, below seal */
+}
+
+.bottom-flap {
+    bottom: calc(-1 * var(--gap-height) / 2); /* Pull down slightly for gap */
+    /* Show the BOTTOM section of the BACK image */
+    background-position: 0 calc(-1 * (var(--flap-height) + var(--letter-height-folded))); 
+    transform-origin: bottom center; 
+    /* Add subtle shadow to simulate top edge */
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+    /* Slight rotation for natural look */
+    transform: rotateX(-2deg);
+}
+
+/* --- Wax Seal (within letter-front-folded) --- */
+.wax-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--wax-seal-size); /* Increased size (80 * 1.3) */
+    height: var(--wax-seal-size); /* Increased size */
+    z-index: 3; /* Above flaps */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.wax-seal img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* --- Unfolded Letter (Initially Hidden) --- */
+.letter-front-unfolded {
+    /* Background image set by JS */
+    /* background-image: url('assets/front-letter.webp'); */
+    background-size: var(--letter-width) var(--letter-height-unfolded);
+    background-repeat: no-repeat;
+    background-color: #fdfdfd; /* Fallback background color */
+    transform-origin: center center;
+    position: absolute;
+    height: var(--letter-height-unfolded);
+    /* Position it correctly, maybe using transform */
+    top: calc((var(--letter-height-folded) - var(--letter-height-unfolded)) / 2); /* Center vertically relative to folded size */
+    z-index: 0; /* Initially behind folded view */
+    opacity: 0; /* Initially hidden */
+    transition: opacity var(--unfold-duration) var(--unfold-ease);
+    transform: rotateY(180deg); /* Should match the front-folded orientation initially */
+}
+
+/* --- Animation States --- */
+
+/* Flipped State */
+.folded-letter.flipped {
+    transform: rotateY(180deg);
+}
+
+/* Open State (Flaps unfolded, full letter revealed) */
+.folded-letter.open .top-flap {
+    transform: rotateX(-180deg); /* Unfold upwards - Reset rotation */
+     opacity: 0; /* Hide flap after unfolding */
+}
+
+.folded-letter.open .bottom-flap {
+    transform: rotateX(180deg); /* Unfold downwards - Reset rotation */
+     opacity: 0; /* Hide flap after unfolding */
+}
+
+.folded-letter.open .wax-seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5); /* Optional shrink/fade */
+}
+
+/* Show the unfolded letter when open */
+/* Option 1: Fade in the unfolded view */
+.folded-letter.open .letter-front-unfolded {
+     opacity: 1;
+     z-index: 4; /* Bring to front */
+ }
+
+/* Option 2: Resize container - more complex */
+/* .letter-container.open { 
+    height: var(--letter-height-unfolded);
+} */
+
+/* --- Font Definition --- */
+@font-face {
+    font-family: 'IranNastaliq2';
+    src: url('assets/IranNastaliq2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --- Controls --- */
+.controls {
+    /* Hide the controls */
+    display: none;
+    /* position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px; */
+}
+.controls button {
+    margin: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Optional: Responsive adjustments */
+@media (max-width: 700px) {
+    :root {
+        /* Scale down sizes for smaller screens */
+        --letter-width: 80vw; /* Example: use viewport width */
+        --letter-height-unfolded: calc(var(--letter-width) * (852 / 600));
+        --letter-height-folded: var(--letter-width);
+        --flap-height: calc((var(--letter-height-unfolded) - var(--letter-height-folded)) / 2);
+    }
+    .wax-seal {
+        width: var(--wax-seal-size);
+        height: var(--wax-seal-size);
+    }
+}
